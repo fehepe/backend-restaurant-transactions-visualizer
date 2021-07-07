@@ -1,10 +1,8 @@
 package models
 
-type Buyer struct {
+type Product struct {
 	Id    string   `json:"id,omitempty"`
 	Name  string   `json:"name,omitempty"`
-	Age   int      `json:"age,omitempty"`
+	Price float32  `json:"price,omitempty"`
 	DType []string `json:"dgraph.type,omitempty"`
 }
-
-type BuyerList []Buyer

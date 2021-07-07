@@ -3,7 +3,13 @@ package buyers
 import (
 	"backend-restaurant-transactions-visualizer/internal/models"
 	"backend-restaurant-transactions-visualizer/pkg/db/dgraph"
+	"backend-restaurant-transactions-visualizer/pkg/queries"
+	"encoding/json"
 )
+
+type BuyerListResponse struct {
+	Buyers models.BuyerList `json:"buyers,omitempty"`
+}
 
 type Repository interface {
 	FindAllBuyers() ([]models.Buyer, error)
@@ -19,14 +25,17 @@ func NewBuyersRepository(db *dgraph.Dgraph) *dgraphRepository {
 
 func (d *dgraphRepository) FindAllBuyers() ([]models.Buyer, error) {
 
-	buyers := []models.Buyer{
-		{
-			Id:    "1",
-			Age:   22,
-			Name:  "Prueba",
-			DType: []string{"Buyer"},
-		},
+	resp, err := d.db.Query(queries.AllBuyers, nil)
+
+	if err != nil {
+		return nil, err
 	}
 
-	return buyers, nil
+	var dgraphResponse BuyerListResponse
+
+	if err := json.Unmarshal(resp.GetJson(), &dgraphResponse); err != nil {
+		return nil, err
+	}
+
+	return dgraphResponse.Buyers, nil
 }
