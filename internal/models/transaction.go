@@ -8,3 +8,9 @@ type Transaction struct {
 	ProductIDs []string `json:"productIDs,omitempty"`
 	DType      []string `json:"dgraph.type,omitempty"`
 }
+
+type TransactionList []Transaction
+
+type TransactionsListResponse struct {
+	Transactions TransactionList `json:"transactions,omitempty"`
+}

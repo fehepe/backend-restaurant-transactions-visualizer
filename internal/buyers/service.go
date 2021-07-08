@@ -6,7 +6,7 @@ import (
 )
 
 type Service interface {
-	FindAllBuyers() ([]models.Buyer, error)
+	FindAllBuyers() (models.BuyerList, error)
 }
 
 type buyerService struct {
@@ -17,7 +17,7 @@ func NewBuyersService(buyerRepo Repository) *buyerService {
 	return &buyerService{buyerRepo: buyerRepo}
 }
 
-func (s *buyerService) FindAllBuyers() ([]models.Buyer, error) {
+func (s *buyerService) FindAllBuyers() (models.BuyerList, error) {
 
 	buyers, err := s.buyerRepo.FindAllBuyers()
 

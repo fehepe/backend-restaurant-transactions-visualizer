@@ -111,3 +111,19 @@ func (d Dgraph) Save(element []byte) error {
 
 	return nil
 }
+
+func (d Dgraph) Insert(element []byte) error {
+	ctx := context.Background()
+
+	mutation := &api.Mutation{
+		CommitNow: true,
+		SetJson:   element,
+	}
+
+	_, err := d.dbClient.NewTxn().Mutate(ctx, mutation)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -8,3 +8,7 @@ type Buyer struct {
 }
 
 type BuyerList []Buyer
+
+type BuyersListResponse struct {
+	Buyers BuyerList `json:"buyers,omitempty"`
+}
