@@ -40,11 +40,11 @@ func (bs buyerService) LoadData(date string) error {
 		return err
 	}
 
-	resp, err = dsAPI.Get("transactions", date)
-	fmt.Println(*resp.Transactions)
-	if err != nil {
-		return err
-	}
+	// resp, err = dsAPI.Get("transactions", date)
+	// fmt.Println(*resp.Transactions)
+	// if err != nil {
+	// 	return err
+	// }
 
 	return nil
 }

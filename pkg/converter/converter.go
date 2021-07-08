@@ -3,7 +3,10 @@ package converter
 import (
 	"backend-restaurant-transactions-visualizer/internal/models"
 	"bytes"
+	"encoding/csv"
 	"encoding/json"
+	"io"
+	"strconv"
 )
 
 // Convert bytes to buffer helper
@@ -26,39 +29,28 @@ func BuyersRespToObjList(body []byte) (models.BuyerList, error) {
 		return nil, err
 	}
 
-	// var validBuyersToLoad []models.Buyer
-	// duplicate := make(map[string]bool)
-
-	// for _, item := range buyersList {
-	// 	buyer, err := models.Buyer{Id: item.Id, Name: item.Name, Age: item.Age}
-
-	// 	if err != nil {
-	// 		log.Println(err)
-	// 		continue
-	// 	}
-
-	// 	exist := duplicate[item.Id]
-
-	// 	if exist {
-	// 		continue
-	// 	} else {
-	// 		duplicate[item.Id] = true
-	// 	}
-
-	// 	validBuyersToLoad = append(validBuyersToLoad, *buyer)
-	// }
-
 	return buyersList, nil
 }
 
-func ProductsRespToObjList(body []byte) (models.ProductList, error) {
+func ProductsRespToObjList(body io.Reader) (models.ProductList, error) {
+
 	var productsList models.ProductList
 
-	// err := json.Unmarshal(body, &productsList)
+	reader := csv.NewReader(body)
+	reader.Comma = '\''
 
-	// if err != nil {
-	// 	return nil, err
-	// }
+	for {
+		data, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		id := string(data[0])
+		name := string(data[1])
+		price, _ := strconv.ParseFloat(data[2], 32)
+		product := models.Product{Id: id, Name: name, Price: float32(price), DType: []string{"Product"}}
+		productsList = append(productsList, product)
+	}
+
 	return productsList, nil
 }
 func TransactionsRespToObjList(body []byte) (models.TransactionList, error) {

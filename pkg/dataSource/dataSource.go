@@ -54,17 +54,21 @@ func (ds DataSource) Get(route string, date string) (Responses, error) {
 		return Responses{}, err
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return Responses{}, err
-	}
 
 	switch route {
 	case "buyers":
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return Responses{}, err
+		}
 		buyerlist, err = converter.BuyersRespToObjList(body)
 	case "products":
-		productslist, err = converter.ProductsRespToObjList(body)
+		productslist, err = converter.ProductsRespToObjList(resp.Body)
 	case "transactions":
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return Responses{}, err
+		}
 		transactionslist, err = converter.TransactionsRespToObjList(body)
 	default:
 		log.Fatal("The selected route was wrong.")
