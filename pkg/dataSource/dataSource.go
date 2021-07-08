@@ -15,9 +15,9 @@ type dataSource interface {
 }
 
 type Responses struct {
-	buyers       models.BuyerList
-	products     models.ProductList
-	transactions models.TransactionList
+	Buyers       *models.BuyerList
+	Products     *models.ProductList
+	Transactions *models.TransactionList
 }
 
 type DataSource struct {
@@ -29,7 +29,7 @@ func NewDataSourceAPI(client http.Client) *DataSource {
 
 }
 
-func (ds DataSource) Get(route string, date string) (*Responses, error) {
+func (ds DataSource) Get(route string, date string) (Responses, error) {
 
 	buyerlist := models.BuyerList{}
 	productslist := models.ProductList{}
@@ -39,7 +39,7 @@ func (ds DataSource) Get(route string, date string) (*Responses, error) {
 	parsedUrl, err := url.Parse(baseUrl + route)
 
 	if err != nil {
-		return nil, err
+		return Responses{}, err
 	}
 
 	queryParams := parsedUrl.Query()
@@ -51,12 +51,12 @@ func (ds DataSource) Get(route string, date string) (*Responses, error) {
 	resp, err := ds.apiClient.Get(parsedUrl.String())
 
 	if err != nil {
-		return nil, err
+		return Responses{}, err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return Responses{}, err
 	}
 
 	switch route {
@@ -68,12 +68,12 @@ func (ds DataSource) Get(route string, date string) (*Responses, error) {
 		transactionslist, err = converter.TransactionsRespToObjList(body)
 	default:
 		log.Fatal("The selected route was wrong.")
-		return nil, err
+		return Responses{}, err
 	}
 
 	if err != nil {
-		return nil, err
+		return Responses{}, err
 	}
 
-	return &Responses{buyers: buyerlist, products: productslist, transactions: transactionslist}, nil
+	return Responses{Buyers: &buyerlist, Products: &productslist, Transactions: &transactionslist}, nil
 }

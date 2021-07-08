@@ -18,13 +18,13 @@ func AnyToBytesBuffer(i interface{}) (*bytes.Buffer, error) {
 
 func BuyersRespToObjList(body []byte) (models.BuyerList, error) {
 
-	// var buyersList []models.Buyer
+	var buyersList models.BuyerList
 
-	// err := json.Unmarshal(body, &buyersList)
+	err := json.Unmarshal(body, &buyersList)
 
-	// if err != nil {
-	// 	return nil, err
-	// }
+	if err != nil {
+		return nil, err
+	}
 
 	// var validBuyersToLoad []models.Buyer
 	// duplicate := make(map[string]bool)
@@ -48,77 +48,27 @@ func BuyersRespToObjList(body []byte) (models.BuyerList, error) {
 	// 	validBuyersToLoad = append(validBuyersToLoad, *buyer)
 	// }
 
-	// fmt.Println(buyersList)
-	return nil, nil
+	return buyersList, nil
 }
 
 func ProductsRespToObjList(body []byte) (models.ProductList, error) {
+	var productsList models.ProductList
 
-	// var buyersList []models.Buyer
-
-	// err := json.Unmarshal(body, &buyersList)
+	// err := json.Unmarshal(body, &productsList)
 
 	// if err != nil {
 	// 	return nil, err
 	// }
-
-	// var validBuyersToLoad []models.Buyer
-	// duplicate := make(map[string]bool)
-
-	// for _, item := range buyersList {
-	// 	buyer, err := models.Buyer{Id: item.Id, Name: item.Name, Age: item.Age}
-
-	// 	if err != nil {
-	// 		log.Println(err)
-	// 		continue
-	// 	}
-
-	// 	exist := duplicate[item.Id]
-
-	// 	if exist {
-	// 		continue
-	// 	} else {
-	// 		duplicate[item.Id] = true
-	// 	}
-
-	// 	validBuyersToLoad = append(validBuyersToLoad, *buyer)
-	// }
-
-	// fmt.Println(buyersList)
-	return nil, nil
+	return productsList, nil
 }
 func TransactionsRespToObjList(body []byte) (models.TransactionList, error) {
+	var transactionList models.TransactionList
 
-	// var buyersList []models.Buyer
-
-	// err := json.Unmarshal(body, &buyersList)
+	// err := json.Unmarshal(body, &transactionList)
 
 	// if err != nil {
 	// 	return nil, err
 	// }
+	return transactionList, nil
 
-	// var validBuyersToLoad []models.Buyer
-	// duplicate := make(map[string]bool)
-
-	// for _, item := range buyersList {
-	// 	buyer, err := models.Buyer{Id: item.Id, Name: item.Name, Age: item.Age}
-
-	// 	if err != nil {
-	// 		log.Println(err)
-	// 		continue
-	// 	}
-
-	// 	exist := duplicate[item.Id]
-
-	// 	if exist {
-	// 		continue
-	// 	} else {
-	// 		duplicate[item.Id] = true
-	// 	}
-
-	// 	validBuyersToLoad = append(validBuyersToLoad, *buyer)
-	// }
-
-	// fmt.Println(buyersList)
-	return nil, nil
 }
