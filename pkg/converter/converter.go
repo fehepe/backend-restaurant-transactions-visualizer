@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"io"
 	"strconv"
+	"strings"
 )
 
 // Convert bytes to buffer helper
@@ -53,14 +54,33 @@ func ProductsRespToObjList(body io.Reader) (models.ProductList, error) {
 
 	return productsList, nil
 }
+
 func TransactionsRespToObjList(body []byte) (models.TransactionList, error) {
 	var transactionList models.TransactionList
 
-	// err := json.Unmarshal(body, &transactionList)
+	data := string(body)
 
-	// if err != nil {
-	// 	return nil, err
-	// }
+	dataSplit := strings.Split(data, "#")
+
+	for _, tranx := range dataSplit {
+
+		if tranx == "" {
+			continue
+		}
+
+		params := strings.Split(tranx, "\x00")
+
+		if len(params) < 4 {
+			continue
+		}
+
+		productIds := strings.Split(params[4][1:len(params[4])-1], ",")
+
+		transaction := models.Transaction{ID: params[0], BuyerID: params[1], IP: params[2], Device: params[3], ProductIDs: productIds, DType: []string{"Transaction"}}
+
+		transactionList = append(transactionList, transaction)
+	}
+
 	return transactionList, nil
 
 }

@@ -27,24 +27,24 @@ func (bs buyerService) LoadData(date string) error {
 	if date == "" {
 		date = fmt.Sprint(time.Now().Local().Unix())
 	}
-	resp, err := dsAPI.Get("buyers", date)
+	// resp, err := dsAPI.Get("buyers", date)
 
-	fmt.Println(*resp.Buyers)
+	// fmt.Println(*resp.Buyers)
 
-	if err != nil {
-		return err
-	}
-	resp, err = dsAPI.Get("products", date)
-	fmt.Println((*resp.Products))
-	if err != nil {
-		return err
-	}
-
-	// resp, err = dsAPI.Get("transactions", date)
-	// fmt.Println(*resp.Transactions)
 	// if err != nil {
 	// 	return err
 	// }
+	// resp, err = dsAPI.Get("products", date)
+	// fmt.Println((*resp.Products))
+	// if err != nil {
+	// 	return err
+	// }
+
+	resp, err := dsAPI.Get("transactions", date)
+	fmt.Println(*resp.Transactions)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
