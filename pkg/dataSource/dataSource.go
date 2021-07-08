@@ -10,10 +10,6 @@ import (
 	"os"
 )
 
-type dataSource interface {
-	Get(route string, date string) (Responses, error)
-}
-
 type Responses struct {
 	Buyers       *models.BuyerList
 	Products     *models.ProductList
@@ -62,6 +58,9 @@ func (ds DataSource) Get(route string, date string) (Responses, error) {
 			return Responses{}, err
 		}
 		buyerlist, err = converter.BuyersRespToObjList(body)
+		if err != nil {
+			return Responses{}, err
+		}
 	case "products":
 		productslist, err = converter.ProductsRespToObjList(resp.Body)
 	case "transactions":
@@ -70,6 +69,9 @@ func (ds DataSource) Get(route string, date string) (Responses, error) {
 			return Responses{}, err
 		}
 		transactionslist, err = converter.TransactionsRespToObjList(body)
+		if err != nil {
+			return Responses{}, err
+		}
 	default:
 		log.Fatal("The selected route was wrong.")
 		return Responses{}, err

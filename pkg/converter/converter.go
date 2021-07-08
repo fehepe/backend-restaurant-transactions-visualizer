@@ -60,23 +60,18 @@ func TransactionsRespToObjList(body []byte) (models.TransactionList, error) {
 
 	data := string(body)
 
-	dataSplit := strings.Split(data, "#")
+	dataSplit := strings.Split(data, "\x00\x00")
 
 	for _, tranx := range dataSplit {
-
-		if tranx == "" {
-			continue
-		}
 
 		params := strings.Split(tranx, "\x00")
 
 		if len(params) < 4 {
 			continue
 		}
-
 		productIds := strings.Split(params[4][1:len(params[4])-1], ",")
 
-		transaction := models.Transaction{ID: params[0], BuyerID: params[1], IP: params[2], Device: params[3], ProductIDs: productIds, DType: []string{"Transaction"}}
+		transaction := models.Transaction{ID: strings.ReplaceAll(params[0], "#", ""), BuyerID: params[1], IP: params[2], Device: params[3], ProductIDs: productIds, DType: []string{"Transaction"}}
 
 		transactionList = append(transactionList, transaction)
 	}

@@ -11,40 +11,56 @@ type Service interface {
 	LoadData(date string) error
 }
 
-type buyerService struct {
-	buyerRepo  Repository
+type loadService struct {
+	loadRepo   Repository
 	clientHttp http.Client
 }
 
-func NewLoadDataService(buyerRepo Repository, clientHttp http.Client) *buyerService {
-	return &buyerService{buyerRepo: buyerRepo, clientHttp: clientHttp}
+func NewLoadDataService(loadRepo Repository, clientHttp http.Client) *loadService {
+	return &loadService{loadRepo: loadRepo, clientHttp: clientHttp}
 }
 
-func (bs buyerService) LoadData(date string) error {
+func (ls loadService) LoadData(date string) error {
 
-	dsAPI := datasource.NewDataSourceAPI(bs.clientHttp)
+	dsAPI := datasource.NewDataSourceAPI(ls.clientHttp)
 
 	if date == "" {
 		date = fmt.Sprint(time.Now().Local().Unix())
 	}
-	// resp, err := dsAPI.Get("buyers", date)
+	resp, err := dsAPI.Get("buyers", date)
 
-	// fmt.Println(*resp.Buyers)
+	if err != nil {
+		return err
+	}
 
-	// if err != nil {
-	// 	return err
-	// }
-	// resp, err = dsAPI.Get("products", date)
-	// fmt.Println((*resp.Products))
-	// if err != nil {
-	// 	return err
-	// }
+	buyersToInsert, err := ls.loadRepo.FilterBuyersAlreadyExist(*resp.Buyers)
+	if err != nil {
+		return err
+	}
+	ls.loadRepo.InsertBuyers(buyersToInsert)
 
-	resp, err := dsAPI.Get("transactions", date)
+	resp, err = dsAPI.Get("products", date)
+
+	if err != nil {
+		return err
+	}
+
+	productsToInsert, err := ls.loadRepo.FilterProductsAlreadyExist(*resp.Products)
+	if err != nil {
+		return err
+	}
+	ls.loadRepo.InsertProduct(productsToInsert)
+
+	resp, err = dsAPI.Get("transactions", date)
 	fmt.Println(*resp.Transactions)
 	if err != nil {
 		return err
 	}
+	transactionsToInsert, err := ls.loadRepo.FilterTransactionsAlreadyExist(*resp.Transactions)
+	if err != nil {
+		return err
+	}
+	ls.loadRepo.InsertTransactions(transactionsToInsert)
 
 	return nil
 }

@@ -12,12 +12,13 @@ import (
 type Dgraph struct {
 	dbClient *dgo.Dgraph
 	Cancel   CancelFunc
+	ctx      context.Context
 }
 
 type CancelFunc func()
 
 func ConnectDB(dgraphUrl string) (*Dgraph, error) {
-
+	context := context.Background()
 	conn, err := grpc.Dial(dgraphUrl, grpc.WithInsecure())
 
 	if err != nil {
@@ -33,7 +34,7 @@ func ConnectDB(dgraphUrl string) (*Dgraph, error) {
 		}
 	}
 
-	return &Dgraph{dbClient: dgraphClient, Cancel: cancelFunc}, nil
+	return &Dgraph{dbClient: dgraphClient, Cancel: cancelFunc, ctx: context}, nil
 }
 
 func (d Dgraph) LoadSchema() error {
@@ -74,9 +75,7 @@ func (d Dgraph) LoadSchema() error {
 		}`,
 	}
 
-	ctx := context.Background()
-
-	if err := d.dbClient.Alter(ctx, op); err != nil {
+	if err := d.dbClient.Alter(d.ctx, op); err != nil {
 		log.Fatalf("Error while mutating schema: %v\n", err)
 		return err
 	}
@@ -87,8 +86,7 @@ func (d Dgraph) LoadSchema() error {
 func (d Dgraph) Query(query string,
 	variables map[string]string) (*api.Response, error) {
 
-	ctx := context.Background()
-	res, err := d.dbClient.NewTxn().QueryWithVars(ctx, query, variables)
+	res, err := d.dbClient.NewTxn().QueryWithVars(d.ctx, query, variables)
 
 	if err != nil {
 		return &api.Response{}, nil
@@ -97,14 +95,13 @@ func (d Dgraph) Query(query string,
 }
 
 func (d Dgraph) Save(element []byte) error {
-	ctx := context.Background()
 
 	mutation := &api.Mutation{
 		CommitNow: true,
 		SetJson:   element,
 	}
 
-	_, err := d.dbClient.NewTxn().Mutate(ctx, mutation)
+	_, err := d.dbClient.NewTxn().Mutate(d.ctx, mutation)
 	if err != nil {
 		return err
 	}
@@ -113,14 +110,13 @@ func (d Dgraph) Save(element []byte) error {
 }
 
 func (d Dgraph) Insert(element []byte) error {
-	ctx := context.Background()
 
 	mutation := &api.Mutation{
 		CommitNow: true,
 		SetJson:   element,
 	}
 
-	_, err := d.dbClient.NewTxn().Mutate(ctx, mutation)
+	_, err := d.dbClient.NewTxn().Mutate(d.ctx, mutation)
 	if err != nil {
 		return err
 	}

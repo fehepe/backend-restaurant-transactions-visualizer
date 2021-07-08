@@ -33,15 +33,12 @@ func main() {
 	}
 
 	client := http.Client{}
-	//context := context.Background()
 
 	buyerRepository := buyers.NewBuyersRepository(db)
 	buyerService := buyers.NewBuyersService(buyerRepository)
 	loadRepository := loaddata.NewLoadDataRepository(db)
 	loadService := loaddata.NewLoadDataService(loadRepository, client)
-
-	loadService.LoadData("")
-
 	fmt.Println(buyerService)
-
+	err = loadService.LoadData("")
+	fmt.Println(err)
 }

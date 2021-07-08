@@ -22,7 +22,7 @@ func NewBuyersRepository(db *dgraph.Dgraph) *dgraphRepository {
 
 func (d *dgraphRepository) FindAllBuyers() (models.BuyerList, error) {
 
-	resp, err := d.db.Query(queries.AllBuyers, nil)
+	resp, err := d.db.Query(queries.FindBuyers, nil)
 
 	if err != nil {
 		log.Fatal("Error running the query of Find all Buyers.")
