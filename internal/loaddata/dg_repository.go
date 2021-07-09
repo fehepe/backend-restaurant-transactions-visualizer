@@ -11,6 +11,8 @@ import (
 type Repository interface {
 	Insert(entity []byte) error
 
+	GetKvpBuyers() (map[string]string, error)
+	GetKvpProducts() (map[string]string, error)
 	FilterBuyersAlreadyExist(buyers models.BuyerList) (models.BuyerList, error)
 	FilterProductsAlreadyExist(buyers models.ProductList) (models.ProductList, error)
 	FilterTransactionsAlreadyExist(buyers models.TransactionList) (models.TransactionList, error)
@@ -113,6 +115,50 @@ func (dr dgraphRepository) FilterTransactionsAlreadyExist(tranxs models.Transact
 	}
 	return resultList, nil
 }
+func (dr dgraphRepository) GetKvpBuyers() (map[string]string, error) {
+	resp, err := dr.db.Query(queries.FindBuyers, nil)
+
+	if err != nil {
+		log.Fatal("Error running the query of Find all Buyers.")
+		return nil, err
+	}
+
+	var dgraphResponse models.BuyersListResponse
+
+	if err := json.Unmarshal(resp.GetJson(), &dgraphResponse); err != nil {
+		return nil, err
+	}
+
+	kvpBuyers := make(map[string]string)
+	for _, buyers := range dgraphResponse.Buyers {
+		kvpBuyers[buyers.Id] = buyers.UId
+	}
+
+	return kvpBuyers, nil
+}
+
+func (dr dgraphRepository) GetKvpProducts() (map[string]string, error) {
+	resp, err := dr.db.Query(queries.FindProducts, nil)
+
+	if err != nil {
+		log.Fatal("Error running the query of Find all Buyers.")
+		return nil, err
+	}
+
+	var dgraphResponse models.ProductsListResponse
+
+	if err := json.Unmarshal(resp.GetJson(), &dgraphResponse); err != nil {
+		return nil, err
+	}
+
+	kvpProducts := make(map[string]string)
+	for _, prod := range dgraphResponse.Products {
+		kvpProducts[prod.Id] = prod.UId
+	}
+
+	return kvpProducts, nil
+}
+
 func containsBuyer(list models.BuyerList, buyer models.Buyer) bool {
 	for _, v := range list {
 		if v.Id == buyer.Id {

@@ -74,8 +74,13 @@ func TransactionsRespToObjList(body []byte) (models.TransactionList, error) {
 			continue
 		}
 		productIds := strings.Split(params[4][1:len(params[4])-1], ",")
+		listBought := models.ProductList{}
+		for _, product := range productIds {
+			product := models.Product{UId: product}
+			listBought = append(listBought, product)
+		}
 
-		transaction := models.Transaction{Id: strings.ReplaceAll(params[0], "#", ""), BuyerId: params[1], IP: params[2], Device: params[3], ProductIds: productIds, DType: []string{"Transaction"}}
+		transaction := models.Transaction{Id: strings.ReplaceAll(params[0], "#", ""), BuyerId: params[1], IP: params[2], Device: params[3], ProductIds: productIds, DType: []string{"Transaction"}, Buyer: models.Buyer{UId: params[1]}, Products: listBought}
 
 		transactionList = append(transactionList, transaction)
 	}

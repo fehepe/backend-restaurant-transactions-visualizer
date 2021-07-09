@@ -49,29 +49,29 @@ func (d Dgraph) LoadSchema() error {
 		device:      string                 .
 		productIDs:  [string] @index(exact) .
 		date:        string   @index(exact) .
-		transaction: [uid]    @reverse      .
-		product:     [uid]    @reverse      .
+		products:    [uid]    @reverse      .
+		buyer:       uid      @reverse      .
+		
 		type Buyer {
 			id:   string
 			name: string 
-			age:  int
-			
+			age:  int			
 		}
 		
 		type Product {
 			id:    string
 			name:  string
-			price: int
-			
+			price: int			
 		}
 		
 		type Transaction {
 			id:         string
 			buyerID:    string
+			buyer:      Buyer
 			ip:         string
 			device:     string
 			productIDs: [string]
-			
+			products:    [Product]
 		}`,
 	}
 

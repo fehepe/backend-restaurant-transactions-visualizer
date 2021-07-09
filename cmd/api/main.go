@@ -19,14 +19,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	schemaLoaded := os.Getenv("SCHEMA_LOAD")
-
-	if schemaLoaded == "0" {
-		os.Setenv("SCHEMA_LOAD", "1")
-	}
 
 	dbConn := os.Getenv("CONN_DB")
 	db, err := dgraph.ConnectDB(dbConn)
+
+	db.LoadSchema()
 
 	if err != nil {
 		log.Fatalf("Error creating a new DGraph Client: %v", err)
