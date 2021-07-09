@@ -98,9 +98,8 @@ func (d Dgraph) Save(element []byte) error {
 
 	mutation := &api.Mutation{
 		CommitNow: true,
-		SetJson:   element,
 	}
-
+	mutation.SetJson = element
 	_, err := d.dbClient.NewTxn().Mutate(d.ctx, mutation)
 	if err != nil {
 		return err

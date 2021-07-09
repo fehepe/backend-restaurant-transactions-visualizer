@@ -28,6 +28,7 @@ func (dr dgraphRepository) Insert(entity []byte) error {
 
 	err := dr.db.Save(entity)
 	if err != nil {
+		log.Fatalf("Error Inserting the entity: %v", err)
 		return err
 	}
 	return nil

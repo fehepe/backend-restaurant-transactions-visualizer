@@ -35,6 +35,7 @@ func (ds DataSource) Get(route string, date string) (Responses, error) {
 	parsedUrl, err := url.Parse(baseUrl + route)
 
 	if err != nil {
+		log.Fatalf("Error Get %v: %v", route, err)
 		return Responses{}, err
 	}
 
@@ -47,6 +48,7 @@ func (ds DataSource) Get(route string, date string) (Responses, error) {
 	resp, err := ds.apiClient.Get(parsedUrl.String())
 
 	if err != nil {
+		log.Fatalf("Error Get %v: %v", route, err)
 		return Responses{}, err
 	}
 	defer resp.Body.Close()
@@ -55,10 +57,12 @@ func (ds DataSource) Get(route string, date string) (Responses, error) {
 	case "buyers":
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
+			log.Fatalf("Error Get %v: %v", route, err)
 			return Responses{}, err
 		}
 		buyerlist, err = converter.BuyersRespToObjList(body)
 		if err != nil {
+			log.Fatalf("Error Get %v: %v", route, err)
 			return Responses{}, err
 		}
 	case "products":
@@ -66,10 +70,12 @@ func (ds DataSource) Get(route string, date string) (Responses, error) {
 	case "transactions":
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
+			log.Fatalf("Error Get %v: %v", route, err)
 			return Responses{}, err
 		}
 		transactionslist, err = converter.TransactionsRespToObjList(body)
 		if err != nil {
+			log.Fatalf("Error Get %v: %v", route, err)
 			return Responses{}, err
 		}
 	default:
@@ -78,6 +84,7 @@ func (ds DataSource) Get(route string, date string) (Responses, error) {
 	}
 
 	if err != nil {
+		log.Fatalf("Error Get %v: %v", route, err)
 		return Responses{}, err
 	}
 

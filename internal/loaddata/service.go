@@ -4,6 +4,7 @@ import (
 	datasource "backend-restaurant-transactions-visualizer/pkg/dataSource"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -30,14 +31,17 @@ func (ls loadService) LoadData(date string) error {
 	}
 	err := ls.LoadDataBuyers(*dsAPI, date)
 	if err != nil {
+		log.Fatalf("Error LoadDataBuyers: %v", err)
 		return err
 	}
 	err = ls.LoadDataTransactions(*dsAPI, date)
 	if err != nil {
+		log.Fatalf("Error LoadDataTransactions: %v", err)
 		return err
 	}
 	err = ls.LoadDataProducts(*dsAPI, date)
 	if err != nil {
+		log.Fatalf("Error LoadDataProducts: %v", err)
 		return err
 	}
 
