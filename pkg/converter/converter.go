@@ -26,6 +26,10 @@ func BuyersRespToObjList(body []byte) (models.BuyerList, error) {
 
 	err := json.Unmarshal(body, &buyersList)
 
+	for idx, _ := range buyersList {
+		buyersList[idx].DType = []string{"Buyer"}
+	}
+
 	if err != nil {
 		return nil, err
 	}

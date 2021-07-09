@@ -63,7 +63,11 @@ func (ls loadService) LoadDataBuyers(dsAPI datasource.DataSource, date string) e
 	if err != nil {
 		return err
 	}
-	ls.loadRepo.Insert(json)
+	err = ls.loadRepo.Insert(json)
+
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -83,8 +87,11 @@ func (ls loadService) LoadDataProducts(dsAPI datasource.DataSource, date string)
 	if err != nil {
 		return err
 	}
-	ls.loadRepo.Insert(json)
+	err = ls.loadRepo.Insert(json)
 
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -102,7 +109,11 @@ func (ls loadService) LoadDataTransactions(dsAPI datasource.DataSource, date str
 	if err != nil {
 		return err
 	}
-	ls.loadRepo.Insert(json)
+	err = ls.loadRepo.Insert(json)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

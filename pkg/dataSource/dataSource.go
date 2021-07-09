@@ -61,6 +61,7 @@ func (ds DataSource) Get(route string, date string) (Responses, error) {
 			return Responses{}, err
 		}
 		buyerlist, err = converter.BuyersRespToObjList(body)
+
 		if err != nil {
 			log.Fatalf("Error Get %v: %v", route, err)
 			return Responses{}, err
