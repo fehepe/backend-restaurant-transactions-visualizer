@@ -2,6 +2,7 @@ package loaddata
 
 import (
 	datasource "backend-restaurant-transactions-visualizer/pkg/dataSource"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -27,6 +28,23 @@ func (ls loadService) LoadData(date string) error {
 	if date == "" {
 		date = fmt.Sprint(time.Now().Local().Unix())
 	}
+	err := ls.LoadDataBuyers(*dsAPI, date)
+	if err != nil {
+		return err
+	}
+	err = ls.LoadDataTransactions(*dsAPI, date)
+	if err != nil {
+		return err
+	}
+	err = ls.LoadDataProducts(*dsAPI, date)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ls loadService) LoadDataBuyers(dsAPI datasource.DataSource, date string) error {
 	resp, err := dsAPI.Get("buyers", date)
 
 	if err != nil {
@@ -37,9 +55,17 @@ func (ls loadService) LoadData(date string) error {
 	if err != nil {
 		return err
 	}
-	ls.loadRepo.InsertBuyers(buyersToInsert)
+	json, err := json.Marshal(buyersToInsert)
+	if err != nil {
+		return err
+	}
+	ls.loadRepo.Insert(json)
+	return nil
+}
 
-	resp, err = dsAPI.Get("products", date)
+func (ls loadService) LoadDataProducts(dsAPI datasource.DataSource, date string) error {
+
+	resp, err := dsAPI.Get("products", date)
 
 	if err != nil {
 		return err
@@ -49,9 +75,17 @@ func (ls loadService) LoadData(date string) error {
 	if err != nil {
 		return err
 	}
-	ls.loadRepo.InsertProduct(productsToInsert)
+	json, err := json.Marshal(productsToInsert)
+	if err != nil {
+		return err
+	}
+	ls.loadRepo.Insert(json)
 
-	resp, err = dsAPI.Get("transactions", date)
+	return nil
+}
+
+func (ls loadService) LoadDataTransactions(dsAPI datasource.DataSource, date string) error {
+	resp, err := dsAPI.Get("transactions", date)
 	fmt.Println(*resp.Transactions)
 	if err != nil {
 		return err
@@ -60,7 +94,11 @@ func (ls loadService) LoadData(date string) error {
 	if err != nil {
 		return err
 	}
-	ls.loadRepo.InsertTransactions(transactionsToInsert)
+	json, err := json.Marshal(transactionsToInsert)
+	if err != nil {
+		return err
+	}
+	ls.loadRepo.Insert(json)
 
 	return nil
 }

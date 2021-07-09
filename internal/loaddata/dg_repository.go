@@ -9,9 +9,7 @@ import (
 )
 
 type Repository interface {
-	InsertBuyers(buyers models.BuyerList) error
-	InsertProduct(prods models.ProductList) error
-	InsertTransactions(tranxs models.TransactionList) error
+	Insert(entity []byte) error
 
 	FilterBuyersAlreadyExist(buyers models.BuyerList) (models.BuyerList, error)
 	FilterProductsAlreadyExist(buyers models.ProductList) (models.ProductList, error)
@@ -26,14 +24,12 @@ func NewLoadDataRepository(db *dgraph.Dgraph) *dgraphRepository {
 	return &dgraphRepository{db: db}
 }
 
-func (dr dgraphRepository) InsertBuyers(buyers models.BuyerList) error {
-	return nil
-}
+func (dr dgraphRepository) Insert(entity []byte) error {
 
-func (dr dgraphRepository) InsertProduct(prods models.ProductList) error {
-	return nil
-}
-func (dr dgraphRepository) InsertTransactions(tranxs models.TransactionList) error {
+	err := dr.db.Save(entity)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
