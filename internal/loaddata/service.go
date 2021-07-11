@@ -1,6 +1,7 @@
 package loaddata
 
 import (
+	"backend-restaurant-transactions-visualizer/internal/models"
 	datasource "backend-restaurant-transactions-visualizer/pkg/dataSource"
 	"encoding/json"
 	"fmt"
@@ -32,16 +33,12 @@ func (ls *loadService) LoadData(date string) error {
 
 	buyersUIds, err := ls.LoadDataBuyers(*dsAPI, date)
 
-	fmt.Println(buyersUIds)
-
 	if err != nil {
 		log.Fatalf("Error LoadDataBuyers: %v", err)
 		return err
 	}
 
 	productsUIds, err := ls.LoadDataProducts(*dsAPI, date)
-
-	fmt.Println(productsUIds)
 
 	if err != nil {
 		log.Fatalf("Error LoadDataProducts: %v", err)
@@ -56,13 +53,57 @@ func (ls *loadService) LoadData(date string) error {
 
 	return nil
 }
+func eliminateDuplicates(resp datasource.Responses) datasource.Responses {
+	kvpResponse := make(map[string]string)
+	buyerlist := models.BuyerList{}
+	productslist := models.ProductList{}
+	transactionslist := models.TransactionList{}
 
+	if len(*resp.Buyers) != 0 {
+
+		for _, buyer := range *resp.Buyers {
+			if kvpResponse[buyer.Id] == "" {
+
+				kvpResponse[buyer.Id] = buyer.Id
+				buyerlist = append(buyerlist, buyer)
+			} else {
+				fmt.Println(buyer.Id)
+			}
+
+		}
+
+	} else if len(*resp.Products) != 0 {
+		for _, prod := range *resp.Products {
+			if kvpResponse[prod.Id] == "" {
+
+				kvpResponse[prod.Id] = prod.Id
+				productslist = append(productslist, prod)
+			} else {
+				fmt.Println(prod.Id)
+			}
+
+		}
+	} else {
+		for _, trnx := range *resp.Transactions {
+			if kvpResponse[trnx.Id] == "" {
+
+				kvpResponse[trnx.Id] = trnx.Id
+				transactionslist = append(transactionslist, trnx)
+			} else {
+				fmt.Println(trnx.Id)
+			}
+
+		}
+	}
+	return datasource.Responses{Buyers: &buyerlist, Products: &productslist, Transactions: &transactionslist}
+
+}
 func (ls loadService) LoadDataBuyers(dsAPI datasource.DataSource, date string) (map[string]string, error) {
 	resp, err := dsAPI.Get("buyers", date)
-
 	if err != nil {
 		return nil, err
 	}
+	resp = eliminateDuplicates(resp)
 
 	buyersToInsert, err := ls.loadRepo.FilterBuyersAlreadyExist(*resp.Buyers)
 	if err != nil {
@@ -73,6 +114,7 @@ func (ls loadService) LoadDataBuyers(dsAPI datasource.DataSource, date string) (
 	if err != nil {
 		return nil, err
 	}
+
 	err = ls.loadRepo.Insert(json)
 
 	if err != nil {
@@ -93,7 +135,7 @@ func (ls loadService) LoadDataProducts(dsAPI datasource.DataSource, date string)
 	if err != nil {
 		return nil, err
 	}
-
+	resp = eliminateDuplicates(resp)
 	productsToInsert, err := ls.loadRepo.FilterProductsAlreadyExist(*resp.Products)
 	if err != nil {
 		return nil, err
@@ -117,19 +159,20 @@ func (ls loadService) LoadDataProducts(dsAPI datasource.DataSource, date string)
 
 func (ls loadService) LoadDataTransactions(dsAPI datasource.DataSource, date string, kvpBuyers, kvpProds map[string]string) error {
 	resp, err := dsAPI.Get("transactions", date)
-	fmt.Println(*resp.Transactions)
+
 	if err != nil {
 		return err
 	}
+	resp = eliminateDuplicates(resp)
 	transactionsToInsert, err := ls.loadRepo.FilterTransactionsAlreadyExist(*resp.Transactions)
 	if err != nil {
 		return err
 	}
 
-	for idxT, _ := range transactionsToInsert {
+	for idxT := range transactionsToInsert {
 		buyerDbUid := kvpBuyers[transactionsToInsert[idxT].Buyer.UId]
 		transactionsToInsert[idxT].Buyer.UId = buyerDbUid
-		for idx, _ := range transactionsToInsert[idxT].Products {
+		for idx := range transactionsToInsert[idxT].Products {
 			prodDbUid := kvpProds[transactionsToInsert[idxT].Products[idx].UId]
 
 			transactionsToInsert[idxT].Products[idx].UId = prodDbUid

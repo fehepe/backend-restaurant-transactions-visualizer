@@ -38,6 +38,7 @@ func (dr dgraphRepository) Insert(entity []byte) error {
 
 func (dr dgraphRepository) FilterBuyersAlreadyExist(buyers models.BuyerList) (models.BuyerList, error) {
 	resultList := models.BuyerList{}
+
 	resp, err := dr.db.Query(queries.FindBuyers, nil)
 
 	if err != nil {

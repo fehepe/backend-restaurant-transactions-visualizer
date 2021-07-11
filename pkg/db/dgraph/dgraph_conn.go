@@ -48,7 +48,6 @@ func (d Dgraph) LoadSchema() error {
 		ip:          string   @index(exact) .
 		device:      string                 .
 		productIDs:  [string] @index(exact) .
-		date:        string   @index(exact) .
 		products:    [uid]    @reverse      .
 		buyer:       uid      @reverse      .
 		
@@ -71,7 +70,7 @@ func (d Dgraph) LoadSchema() error {
 			ip:         string
 			device:     string
 			productIDs: [string]
-			products:    [Product]
+			products:   [Product]
 		}`,
 	}
 
