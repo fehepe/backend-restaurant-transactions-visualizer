@@ -1,15 +1,21 @@
 package models
 
-type BuyerDetails struct {
-	Buyer               Buyer                `json:"buyer,omitempty"`
-	TransactionsDetails []TransactionDetails `json:"transactions,omitempty"`
-	BuyersEqIp          BuyerList            `json:"buyerEqIp,omitempty"`
-	Products            []Product            `json:"products,omitempty"`
+type RecommendationsResponse struct {
+	Product         []Product `json:"product,omitempty"`
+	Recommendations []Product `json:"productsRecomendation,omitempty"`
 }
 
 type TransactionDetails struct {
-	Id       string    `json:"id,omitempty"`
-	Ip       string    `json:"ip,omitempty"`
-	Device   string    `json:"device,omitempty"`
-	Products []Product `json:"products,omitempty"`
+	Id              string                    `json:"id,omitempty"`
+	Ip              string                    `json:"ip,omitempty"`
+	Device          string                    `json:"device,omitempty"`
+	Products        ProductList               `json:"products,omitempty"`
+	Recommendations []RecommendationsResponse `json:"recommendations,omitempty"`
+}
+
+type BuyerEqIp struct {
+	Id     string `json:"id,omitempty"`
+	Ip     string `json:"ip,omitempty"`
+	Device string `json:"device,omitempty"`
+	Buyer  Buyer  `json:"buyer,omitempty"`
 }

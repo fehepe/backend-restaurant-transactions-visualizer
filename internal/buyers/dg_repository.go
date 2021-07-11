@@ -10,7 +10,12 @@ import (
 
 type Repository interface {
 	FindAllBuyers() (models.BuyerList, error)
-	FindBuyerById(buyerId string) (*models.BuyerDetails, error)
+	FindBuyerById(buyerId string) (*BuyerDetailsResponse, error)
+}
+type BuyerDetailsResponse struct {
+	Buyer               []models.Buyer              `json:"buyer,omitempty"`
+	TransactionsDetails []models.TransactionDetails `json:"transactions,omitempty"`
+	BuyersEqIp          []models.BuyerEqIp          `json:"buyerEqIp,omitempty"`
 }
 
 type dgraphRepository struct {
@@ -39,20 +44,51 @@ func (d *dgraphRepository) FindAllBuyers() (models.BuyerList, error) {
 	return dgraphResponse.Buyers, nil
 }
 
-func (d *dgraphRepository) FindBuyerById(buyerId string) (*models.BuyerDetails, error) {
+func (d *dgraphRepository) FindBuyerById(buyerId string) (*BuyerDetailsResponse, error) {
 
-	resp, err := d.db.Query(queries.FindBuyerById, nil)
+	vars := map[string]string{"$id": buyerId}
+	resp, err := d.db.Query(queries.FindBuyerDetailsById, vars)
 
 	if err != nil {
-		log.Fatal("Error running the query of Find all Buyers.")
+		log.Fatal("Error running the query of Find Buyer Details By Id.")
 		return nil, err
 	}
 
-	var dgraphResponse models.BuyerDetails
+	var dgraphResponse BuyerDetailsResponse
 
-	if err := json.Unmarshal(resp.GetJson(), &dgraphResponse); err != nil {
+	if err := json.Unmarshal(resp.Json, &dgraphResponse); err != nil {
 		return nil, err
+	}
+	for idx, tranx := range dgraphResponse.TransactionsDetails {
+		dgraphResponse.TransactionsDetails[idx], err = d.getRecommendations(tranx)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &dgraphResponse, nil
+}
+
+func (d *dgraphRepository) getRecommendations(traxn models.TransactionDetails) (models.TransactionDetails, error) {
+
+	for _, prod := range traxn.Products {
+		vars := map[string]string{"$id": prod.Id}
+		resp, err := d.db.Query(queries.FindRecomendationsByProdId, vars)
+
+		if err != nil {
+			log.Fatal("Error running the query of get Recommendations By Id.")
+			return models.TransactionDetails{}, err
+		}
+
+		var dgraphResponse models.RecommendationsResponse
+
+		if err := json.Unmarshal(resp.Json, &dgraphResponse); err != nil {
+			return models.TransactionDetails{}, err
+		}
+
+		traxn.Recommendations = append(traxn.Recommendations, dgraphResponse)
+	}
+
+	return traxn, nil
+
 }

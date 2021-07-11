@@ -7,7 +7,7 @@ import (
 
 type Service interface {
 	FindAllBuyers() (models.BuyerList, error)
-	FindBuyerById(buyerId string) (*models.BuyerDetails, error)
+	FindBuyerById(buyerId string) (*BuyerDetailsResponse, error)
 }
 
 type buyerService struct {
@@ -30,7 +30,7 @@ func (s *buyerService) FindAllBuyers() (models.BuyerList, error) {
 	return buyers, nil
 }
 
-func (s *buyerService) FindBuyerById(buyerId string) (*models.BuyerDetails, error) {
+func (s *buyerService) FindBuyerById(buyerId string) (*BuyerDetailsResponse, error) {
 
 	buyerDetails, err := s.buyerRepo.FindBuyerById(buyerId)
 

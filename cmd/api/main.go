@@ -23,7 +23,7 @@ func main() {
 	dbConn := os.Getenv("CONN_DB")
 	db, err := dgraph.ConnectDB(dbConn)
 
-	db.LoadSchema()
+	//db.LoadSchema()
 
 	if err != nil {
 		log.Fatalf("Error creating a new DGraph Client: %v", err)
@@ -35,7 +35,9 @@ func main() {
 	buyerService := buyers.NewBuyersService(buyerRepository)
 	loadRepository := loaddata.NewLoadDataRepository(db)
 	loadService := loaddata.NewLoadDataService(loadRepository, client)
-	fmt.Println(buyerService)
-	err = loadService.LoadData("")
-	fmt.Println(err)
+
+	buyerDetails, err := buyerService.FindBuyerById("89722b5")
+	fmt.Println(buyerDetails)
+	//err = loadService.LoadData("")
+	fmt.Println(err, loadService)
 }
