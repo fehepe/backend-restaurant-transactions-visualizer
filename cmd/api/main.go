@@ -3,8 +3,8 @@ package main
 import (
 	"backend-restaurant-transactions-visualizer/internal/buyers"
 	"backend-restaurant-transactions-visualizer/internal/loaddata"
+	"backend-restaurant-transactions-visualizer/internal/server"
 	"backend-restaurant-transactions-visualizer/pkg/db/dgraph"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -21,9 +21,10 @@ func main() {
 	}
 
 	dbConn := os.Getenv("CONN_DB")
+
 	db, err := dgraph.ConnectDB(dbConn)
 
-	//db.LoadSchema()
+	db.LoadSchema()
 
 	if err != nil {
 		log.Fatalf("Error creating a new DGraph Client: %v", err)
@@ -36,8 +37,10 @@ func main() {
 	loadRepository := loaddata.NewLoadDataRepository(db)
 	loadService := loaddata.NewLoadDataService(loadRepository, client)
 
-	buyerDetails, err := buyerService.FindBuyerById("89722b5")
-	fmt.Println(buyerDetails)
-	//err = loadService.LoadData("")
-	fmt.Println(err, loadService)
+	err = server.Run(buyerService, loadService)
+
+	if err != nil {
+		log.Fatalf("Error running the server: %v", err)
+	}
+
 }
