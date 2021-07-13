@@ -4,7 +4,7 @@ const (
 	FindBuyers = `
 		query FindBuyers{
 			buyers(func: type(Buyer)) {
-			
+				uid
 				id
 				name
 				age
@@ -14,7 +14,7 @@ const (
 	FindProducts = `
 		query FindProducts{
 			products(func: type(Product)) {
-			
+				uid
 				id
 				name
 				price
@@ -25,7 +25,7 @@ const (
 	FindTransactions = `
 		query FindTransactions{
 			transactions(func: type(Transaction)) {
-			
+				
 				id
 				buyerID
 				ip

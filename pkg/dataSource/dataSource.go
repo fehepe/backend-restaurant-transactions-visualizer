@@ -39,13 +39,11 @@ func (ds DataSource) Get(route string, date string) (Responses, error) {
 		return Responses{}, err
 	}
 
-	if route == "transactions" {
-		queryParams := parsedUrl.Query()
+	queryParams := parsedUrl.Query()
 
-		queryParams.Add("date", date)
+	queryParams.Add("date", date)
 
-		parsedUrl.RawQuery = queryParams.Encode()
-	}
+	parsedUrl.RawQuery = queryParams.Encode()
 
 	resp, err := ds.apiClient.Get(parsedUrl.String())
 

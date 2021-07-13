@@ -12,6 +12,9 @@ func ListBuyers(s Service) func(rw http.ResponseWriter, r *http.Request) {
 
 		buyers, err := s.FindAllBuyers()
 
+		for idx, _ := range buyers {
+			buyers[idx].UId = ""
+		}
 		if err != nil {
 
 			json.NewEncoder(rw).Encode(err.Error())
