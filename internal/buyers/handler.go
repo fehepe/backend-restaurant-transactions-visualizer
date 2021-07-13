@@ -37,6 +37,9 @@ func GetBuyerDetails(s Service) func(rw http.ResponseWriter, r *http.Request) {
 
 		buyerInfo, err := s.FindBuyerById(buyerId)
 
+		for idx, _ := range buyerInfo.BuyersEqIp {
+			buyerInfo.BuyersEqIp[idx].Buyer.UId = ""
+		}
 		if err != nil {
 
 			json.NewEncoder(rw).Encode(err)
