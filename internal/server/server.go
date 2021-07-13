@@ -21,13 +21,13 @@ func Run(buyerService buyers.Service, loadService loaddata.Service) error {
 		SetJsonResponseContentType,
 	)
 
-	router.Get("/api/buyer", buyers.ListBuyers(buyerService))
-	router.Get("/api/buyer/{buyerId}", buyers.GetBuyerDetails(buyerService))
-	router.Post("/api/load", loaddata.LoadData(loadService))
+	router.Get("/buyer", buyers.ListBuyers(buyerService))
+	router.Get("/buyer/{buyerId}", buyers.GetBuyerDetails(buyerService))
+	router.Post("/load", loaddata.LoadData(loadService))
+	router.Post("/load/{date}", loaddata.LoadData(loadService))
 
-	log.Printf("Starting server on http://localhost%s/api/\n", port)
 	log.Fatal(http.ListenAndServe(port, router))
-
+	log.Printf("Starting server on: http://localhost%s/api/\n", port)
 	return nil
 }
 

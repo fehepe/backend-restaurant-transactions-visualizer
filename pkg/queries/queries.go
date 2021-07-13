@@ -4,7 +4,7 @@ const (
 	FindBuyers = `
 		query FindBuyers{
 			buyers(func: type(Buyer)) {
-				uid
+			
 				id
 				name
 				age
@@ -14,7 +14,7 @@ const (
 	FindProducts = `
 		query FindProducts{
 			products(func: type(Product)) {
-				uid
+			
 				id
 				name
 				price
@@ -25,7 +25,7 @@ const (
 	FindTransactions = `
 		query FindTransactions{
 			transactions(func: type(Transaction)) {
-				uid
+			
 				id
 				buyerID
 				ip
@@ -75,11 +75,11 @@ const (
 	`
 	FindBuyerDetailsById = `query BuyerDetails($id: string) {	
 		buyer(func: eq(id, $id)) {
-			uid
+		
 			id
 			name
 			age
-			dgraph.type
+			
 		}	
 		
 		transactions(func: eq(buyerID,$id),first:5){
@@ -87,11 +87,11 @@ const (
 			ip as ip
 			device
 			products: products {
-				uid
+			
 			  id
 			  name
 			  price	
-			  dgraph.type		  
+			 		  
 			}
 		}
 				
@@ -103,7 +103,7 @@ const (
 				name: name
 				id:  id
 			  	age: age
-				dgraph.type
+				
 			}
 		}
 	}
