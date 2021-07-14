@@ -3,7 +3,6 @@ package server
 import (
 	"backend-restaurant-transactions-visualizer/internal/buyers"
 	"backend-restaurant-transactions-visualizer/internal/loaddata"
-	"log"
 	"net/http"
 	"os"
 
@@ -18,22 +17,10 @@ func Run(buyerService buyers.Service, loadService loaddata.Service) error {
 	router.Use(
 		middleware.Logger,
 		middleware.RedirectSlashes,
-		SetJsonResponseContentType,
+		middleware.SetHeader("Content-Type", "application/json"),
 	)
+	router.Mount("/buyer", buyers.NewHandler(buyerService))
+	router.Mount("/load", loaddata.NewHandler(loadService))
 
-	router.Get("/buyer", buyers.ListBuyers(buyerService))
-	router.Get("/buyer/{buyerId}", buyers.GetBuyerDetails(buyerService))
-	router.Post("/load", loaddata.LoadData(loadService))
-	router.Post("/load/{date}", loaddata.LoadData(loadService))
-
-	log.Fatal(http.ListenAndServe(port, router))
-	log.Printf("Starting server on: http://localhost%s/api/\n", port)
-	return nil
-}
-
-func SetJsonResponseContentType(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Content-Type", "application/json")
-		next.ServeHTTP(w, r)
-	})
+	return http.ListenAndServe(port, router)
 }

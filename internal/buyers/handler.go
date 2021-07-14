@@ -7,7 +7,17 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func ListBuyers(s Service) func(rw http.ResponseWriter, r *http.Request) {
+func NewHandler(buyerService Service) chi.Router {
+
+	router := chi.NewRouter()
+
+	router.Get("/buyer", listBuyers(buyerService))
+	router.Get("/buyer/{buyerId}", getBuyerDetails(buyerService))
+
+	return router
+}
+
+func listBuyers(s Service) func(rw http.ResponseWriter, r *http.Request) {
 	return func(rw http.ResponseWriter, r *http.Request) {
 
 		buyers, err := s.FindAllBuyers()
@@ -17,8 +27,8 @@ func ListBuyers(s Service) func(rw http.ResponseWriter, r *http.Request) {
 		}
 		if err != nil {
 
-			json.NewEncoder(rw).Encode(err.Error())
-			return
+			http.Error(rw, err.Error(), http.StatusInternalServerError)
+
 		}
 
 		json.NewEncoder(rw).Encode(buyers)
@@ -26,14 +36,9 @@ func ListBuyers(s Service) func(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetBuyerDetails(s Service) func(rw http.ResponseWriter, r *http.Request) {
+func getBuyerDetails(s Service) func(rw http.ResponseWriter, r *http.Request) {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		buyerId := chi.URLParam(r, "buyerId")
-
-		if buyerId == "" {
-
-			json.NewEncoder(rw).Encode("BuyerId cannot be empty.")
-		}
 
 		buyerInfo, err := s.FindBuyerById(buyerId)
 
@@ -42,8 +47,7 @@ func GetBuyerDetails(s Service) func(rw http.ResponseWriter, r *http.Request) {
 		}
 		if err != nil {
 
-			json.NewEncoder(rw).Encode(err)
-			return
+			http.Error(rw, err.Error(), http.StatusInternalServerError)
 		}
 
 		json.NewEncoder(rw).Encode(buyerInfo)
