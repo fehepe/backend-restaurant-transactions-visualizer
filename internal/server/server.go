@@ -19,8 +19,11 @@ func Run(buyerService buyers.Service, loadService loaddata.Service) error {
 		middleware.RedirectSlashes,
 		middleware.SetHeader("Content-Type", "application/json"),
 	)
-	router.Mount("/buyer", buyers.NewHandler(buyerService))
-	router.Mount("/load", loaddata.NewHandler(loadService))
+
+	router.Get("/buyer", buyers.ListBuyers(buyerService))
+	router.Get("/buyer/{buyerId}", buyers.GetBuyerDetails(buyerService))
+	router.Post("/load", loaddata.LoadData(loadService))
+	router.Post("/load/{date}", loaddata.LoadData(loadService))
 
 	return http.ListenAndServe(port, router)
 }

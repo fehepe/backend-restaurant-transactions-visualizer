@@ -7,22 +7,12 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func NewHandler(buyerService Service) chi.Router {
-
-	router := chi.NewRouter()
-
-	router.Get("/buyer", listBuyers(buyerService))
-	router.Get("/buyer/{buyerId}", getBuyerDetails(buyerService))
-
-	return router
-}
-
-func listBuyers(s Service) func(rw http.ResponseWriter, r *http.Request) {
+func ListBuyers(s Service) func(rw http.ResponseWriter, r *http.Request) {
 	return func(rw http.ResponseWriter, r *http.Request) {
 
 		buyers, err := s.FindAllBuyers()
 
-		for idx, _ := range buyers {
+		for idx := range buyers {
 			buyers[idx].UId = ""
 		}
 		if err != nil {
@@ -36,13 +26,13 @@ func listBuyers(s Service) func(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-func getBuyerDetails(s Service) func(rw http.ResponseWriter, r *http.Request) {
+func GetBuyerDetails(s Service) func(rw http.ResponseWriter, r *http.Request) {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		buyerId := chi.URLParam(r, "buyerId")
 
 		buyerInfo, err := s.FindBuyerById(buyerId)
 
-		for idx, _ := range buyerInfo.BuyersEqIp {
+		for idx := range buyerInfo.BuyersEqIp {
 			buyerInfo.BuyersEqIp[idx].Buyer.UId = ""
 		}
 		if err != nil {
