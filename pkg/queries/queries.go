@@ -1,6 +1,40 @@
 package queries
 
 const (
+	Schema = `
+	id:          string   @index(exact) .
+	name:        string                 .
+	age:         int                    .
+	price:       int                    .
+	buyerID:     string   @index(exact) .
+	ip:          string   @index(exact) .
+	device:      string                 .
+	productIDs:  [string] @index(exact) .
+	products:    [uid]    @reverse      .
+	buyer:       uid      @reverse      .
+	
+	type Buyer {
+		id:   string
+		name: string 
+		age:  int			
+	}
+	
+	type Product {
+		id:    string
+		name:  string
+		price: int			
+	}
+	
+	type Transaction {
+		id:         string
+		buyerID:    string
+		buyer:      Buyer
+		ip:         string
+		device:     string
+		productIDs: [string]
+		products:   [Product]
+	}`
+
 	FindBuyers = `
 		query FindBuyers{
 			buyers(func: type(Buyer)) {

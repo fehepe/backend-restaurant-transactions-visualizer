@@ -6,6 +6,7 @@ import (
 
 	"github.com/dgraph-io/dgo/v2"
 	"github.com/dgraph-io/dgo/v2/protos/api"
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/pkg/queries"
 	"google.golang.org/grpc"
 )
 
@@ -39,39 +40,7 @@ func ConnectDB(dgraphUrl string) (*Dgraph, error) {
 
 func (d Dgraph) LoadSchema() error {
 	op := &api.Operation{
-		Schema: `
-		id:          string   @index(exact) .
-		name:        string                 .
-		age:         int                    .
-		price:       int                    .
-		buyerID:     string   @index(exact) .
-		ip:          string   @index(exact) .
-		device:      string                 .
-		productIDs:  [string] @index(exact) .
-		products:    [uid]    @reverse      .
-		buyer:       uid      @reverse      .
-		
-		type Buyer {
-			id:   string
-			name: string 
-			age:  int			
-		}
-		
-		type Product {
-			id:    string
-			name:  string
-			price: int			
-		}
-		
-		type Transaction {
-			id:         string
-			buyerID:    string
-			buyer:      Buyer
-			ip:         string
-			device:     string
-			productIDs: [string]
-			products:   [Product]
-		}`,
+		Schema: queries.Schema,
 	}
 
 	if err := d.dbClient.Alter(d.ctx, op); err != nil {
