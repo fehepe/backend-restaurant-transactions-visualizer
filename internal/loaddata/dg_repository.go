@@ -1,10 +1,10 @@
 package loaddata
 
 import (
-	"backend-restaurant-transactions-visualizer/internal/models"
-	"backend-restaurant-transactions-visualizer/pkg/db/dgraph"
-	"backend-restaurant-transactions-visualizer/pkg/queries"
 	"encoding/json"
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/internal/models"
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/pkg/db/dgraph"
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/pkg/queries"
 	"log"
 )
 

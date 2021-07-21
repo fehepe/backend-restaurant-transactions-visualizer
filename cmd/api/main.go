@@ -1,13 +1,14 @@
 package main
 
 import (
-	"backend-restaurant-transactions-visualizer/internal/buyers"
-	"backend-restaurant-transactions-visualizer/internal/loaddata"
-	"backend-restaurant-transactions-visualizer/internal/server"
-	"backend-restaurant-transactions-visualizer/pkg/db/dgraph"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/internal/buyers"
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/internal/loaddata"
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/internal/server"
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/pkg/db/dgraph"
 
 	"github.com/joho/godotenv"
 )

@@ -1,8 +1,8 @@
 package server
 
 import (
-	"backend-restaurant-transactions-visualizer/internal/buyers"
-	"backend-restaurant-transactions-visualizer/internal/loaddata"
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/internal/buyers"
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/internal/loaddata"
 	"net/http"
 	"os"
 

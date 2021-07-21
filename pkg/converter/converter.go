@@ -1,10 +1,10 @@
 package converter
 
 import (
-	"backend-restaurant-transactions-visualizer/internal/models"
 	"bytes"
 	"encoding/csv"
 	"encoding/json"
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/internal/models"
 	"io"
 	"strconv"
 	"strings"
@@ -26,7 +26,7 @@ func BuyersRespToObjList(body []byte) (models.BuyerList, error) {
 
 	err := json.Unmarshal(body, &buyersList)
 
-	for idx, _ := range buyersList {
+	for idx := range buyersList {
 		buyersList[idx].DType = []string{"Buyer"}
 	}
 

@@ -65,7 +65,7 @@ const (
 			  total as count(~products)
 		}
 		  
-		productsRecomendation(func: uid(uid(otherProds)), orderdesc: val(total), first:4){
+		productsRecomendation(func: uid(uid(otherProds)), orderdesc: val(total), first:1){
 			id
 		  	name
 			price			

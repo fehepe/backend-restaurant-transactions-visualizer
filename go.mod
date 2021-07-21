@@ -1,4 +1,4 @@
-module backend-restaurant-transactions-visualizer
+module github.com/fehepe/backend-restaurant-transactions-visualizer
 
 go 1.16
 

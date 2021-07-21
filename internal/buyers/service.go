@@ -1,7 +1,7 @@
 package buyers
 
 import (
-	"backend-restaurant-transactions-visualizer/internal/models"
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/internal/models"
 	"log"
 )
 

@@ -1,13 +1,14 @@
 package datasource
 
 import (
-	"backend-restaurant-transactions-visualizer/internal/models"
-	"backend-restaurant-transactions-visualizer/pkg/converter"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/internal/models"
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/pkg/converter"
 )
 
 type Responses struct {

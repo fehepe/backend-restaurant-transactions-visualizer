@@ -1,10 +1,10 @@
 package loaddata
 
 import (
-	"backend-restaurant-transactions-visualizer/internal/models"
-	datasource "backend-restaurant-transactions-visualizer/pkg/dataSource"
 	"encoding/json"
 	"fmt"
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/internal/models"
+	datasource "github.com/fehepe/backend-restaurant-transactions-visualizer/pkg/dataSource"
 	"log"
 	"net/http"
 	"time"
