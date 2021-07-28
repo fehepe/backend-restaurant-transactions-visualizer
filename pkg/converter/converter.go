@@ -1,24 +1,14 @@
 package converter
 
 import (
-	"bytes"
 	"encoding/csv"
 	"encoding/json"
-	"github.com/fehepe/backend-restaurant-transactions-visualizer/internal/models"
 	"io"
 	"strconv"
 	"strings"
-)
 
-// Convert bytes to buffer helper
-func AnyToBytesBuffer(i interface{}) (*bytes.Buffer, error) {
-	buf := new(bytes.Buffer)
-	err := json.NewEncoder(buf).Encode(i)
-	if err != nil {
-		return buf, err
-	}
-	return buf, nil
-}
+	"github.com/fehepe/backend-restaurant-transactions-visualizer/internal/models"
+)
 
 func BuyersRespToObjList(body []byte) (models.BuyerList, error) {
 
